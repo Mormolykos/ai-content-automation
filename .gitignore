@@ -1,0 +1,28 @@
+# secrets — NEVER commit
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# local data / generated output
+outputs/
+used.json
+
+# n8n
+n8n_data/
+n8n/workflow_daily_seo.json
+
+# stale scaffold (kept locally, excluded from the published repo)
+langchain/generate_metadata.py
+langchain/requirements.txt
+langchain/.env.example
+langgraph/
+scripts/
+
+# os
+.DS_Store
+Thumbs.db
+desktop.ini

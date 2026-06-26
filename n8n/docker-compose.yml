@@ -1,0 +1,46 @@
+# n8n Workflow Automation — Docker Compose
+# ==========================================
+# Runs n8n on port 5678 with persistent data storage.
+#
+# Usage:
+#   docker-compose up -d
+#   docker-compose down
+#   docker-compose logs -f n8n
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n_automation
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic auth for the n8n UI
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=changeme
+
+      # Timezone for cron triggers
+      - GENERIC_TIMEZONE=Europe/Athens
+      - TZ=Europe/Athens
+
+      # Webhook URL (set to your machine's IP or domain in production)
+      - WEBHOOK_URL=http://localhost:5678/
+
+      # Allow running local commands (needed for calling Python scripts)
+      - N8N_ALLOW_EXEC=true
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+    volumes:
+      # Persist n8n data (workflows, credentials, execution history)
+      - n8n_data:/home/node/.n8n
+
+      # Mount the automation project so n8n can access Python scripts
+      - ..:/automation:ro
+
+      # Mount outputs as read-write so n8n can read generated files
+      - ../outputs:/automation/outputs:rw
+
+volumes:
+  n8n_data:
+    driver: local
